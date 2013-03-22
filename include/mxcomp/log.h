@@ -10,7 +10,7 @@
 #include <typeinfo>
 #include <atomic>
 
-namespace rikitiki {
+namespace mxcomp {
   namespace log {
     enum LogLevels {
       INVALID = -100,
@@ -45,4 +45,4 @@ namespace rikitiki {
 }
 
 std::ostream& operator<<(std::ostream&, const std::type_info&);
-#define LOG(CAT, LEVEL) if(rikitiki::log::ShouldLog(#CAT, rikitiki::log::LEVEL) ) rikitiki::log::LogStream(#CAT) << "[" << #CAT << ", " << #LEVEL << " (" << rikitiki::log::currThreadName << ")] "
+#define LOG(CAT, LEVEL) if(mxcomp::log::ShouldLog(#CAT, mxcomp::log::LEVEL) ) mxcomp::log::LogStream(#CAT) << "[" << #CAT << ", " << #LEVEL << " (" << mxcomp::log::currThreadName << ")] "

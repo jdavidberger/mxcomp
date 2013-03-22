@@ -4,13 +4,12 @@
 #include <mxcomp/log.h>
 #include <fstream>
 #include <iostream>
-#include <rikitiki/configuration/configuration>
 #include <cxxabi.h>
+
 static std::ostream* defaultStream = &std::cerr;
 
-namespace rikitiki {
+namespace mxcomp {
   namespace log {
-
     static std::map<std::string, std::ostream*> logStreams;
 
     std::map<std::string, int>& logLevels(){
