@@ -1,0 +1,18 @@
+syntax: glob
+
+*/.deps/*
+*~
+*.a
+*.pdb
+*.o
+*.so
+*.exe
+*.pyc
+*.dll
+*.lib
+*.md5
+*.orig
+.svn/*
+bin/*
+test/output/*
+include/rikitiki/config.h
