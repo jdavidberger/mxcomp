@@ -1,6 +1,7 @@
 #include <assert.h>
-
-namespace stencet {
+#include "tuple_ext.h"
+#include <functional>
+namespace mxcomp {
 
   template <typename T>
     struct use_ {
@@ -79,11 +80,36 @@ namespace stencet {
     const static size_t value = N;
   };
 
+  template <typename... Types> struct Variant_;
+
+  template<size_t N, class... Types>
+    typename GetType<N, Types...>::type& get( Variant_<Types...>& v) {
+    return v.template Get<N>();
+  }
+
+  template<size_t N, class... Types>
+    const typename GetType<N, Types...>::type& get1( const Variant_<Types...>& v) {
+    return v.template Get<N>();
+  }
+
   template <typename... Types>
     struct Variant_ {
       size_t type = (size_t)-1;
+      typedef void (Variant_<Types...>::*DeleteFunction)();
+      DeleteFunction del = 0;
       void* data = 0;
-      
+
+      template <size_t N>
+      void _del () {
+	if(data != 0){
+	  using T = typename GetType<N, Types...>::type;
+	  delete (T*)data;
+	  data = 0;
+	  type = (size_t)-1;
+	}
+      }
+      Variant_<Types...>(){}
+
       template <size_t N>
       void init(){
 	if(data == 0){
@@ -91,6 +117,14 @@ namespace stencet {
 	  using T = typename GetType<N, Types...>::type;
 	  type = N; 
 	  data = new T();
+	  del = &Variant_<Types...>::_del<N>;
+	}
+      }
+      
+      ~Variant_<Types...>() {
+	if(data){
+	  assert(del);
+	  (this->*del)();
 	}
       }
 
@@ -130,6 +164,13 @@ namespace stencet {
       T& as() {
 	return Get<GetIndex<T, 0, Types...>::value > ();
       }
+
+    protected:
+      Variant_<Types...>(const Variant_<Types...>& v){
+	assert(false);
+      }
       
     };
+
+
 }
