@@ -7,7 +7,11 @@
 
 namespace mxcomp {
 
-  template <typename T> struct MetaClass_{    };
+  
+  
+  template <typename T> struct MetaClass_ {    
+    
+  };
 
   struct Member {
   Member(const std::string& _name) : name(_name){}
@@ -42,8 +46,10 @@ namespace mxcomp {
     }
   };
 
+  struct Field {};
+
   template <typename T, typename S>
-    struct Field_ : Member_<T> {
+    struct Field_ : public Member_<T>, public Field {
     using FieldT = S (T::*);
     FieldT field;
   Field_(const std::string& _name, FieldT _field ) : field(_field), Member_<T>(_name) {}
@@ -82,10 +88,18 @@ namespace mxcomp {
 	return f.name;
       }
     };
+
+  /*  template <typename T> struct MetaClass_ {    
+    //    using MembersT = decltype(MetaClass_<T>::Members);
+    static auto members() STATIC_RETURN( MetaClass_<T>::Members );
+    static auto functions() STATIC_RETURN( (tupleExt::of_type<template<typename S> Function<T,S> >( MetaClass_<T>::Members )) );    
+  };
+  */
   
   template <typename T, typename... Args> 
     static auto make_fields(Field_<T, Args>... args) 
     RETURN( (tupleExt::MappedTuple_<std::string, pullName, Field_<T, Args>...>(args...)))   
+
     
     template<typename type> 
     struct DefineT {
@@ -95,11 +109,19 @@ namespace mxcomp {
 #define METACLASS(type)					\
   template <> struct MetaClass_< type > : DefineT<type> 
 
+#define MEMBERS(fs...)				\
+  static auto members()				\
+    STATIC_RETURN(std::make_tuple(fs))
+
 #define FIELDS(fs...)				\
   static auto fields()				\
     STATIC_RETURN(make_fields(fs))
     
 #define FIELD(name)				\
   make_field( #name, &T::name)
+
+#define FUNCTION(name)				\
+  make_field( #name, &T::name)
+
 
 }
