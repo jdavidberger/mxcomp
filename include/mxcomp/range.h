@@ -2,6 +2,8 @@
    The full license is available in the LICENSE file at the root of this project and is also available at http://opensource.org/licenses/MIT. */
 
 #pragma once 
+
+// This code is mostly due to http://preney.ca/paul/archives/934 
 namespace mxcomp {
   template <size_t... N>
   struct indices {}; 
