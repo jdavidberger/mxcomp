@@ -18,6 +18,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fPIC")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS} -std=c++11 -Wno-reorder -O0 -ftemplate-depth=1024")
 
+SET(IS_MAIN_PROJECT ${PROJECT_NAME}==${CMAKE_PROJECT_NAME})
+
 include_directories(include)
 add_subdirectory(src)
 
