@@ -98,7 +98,7 @@ namespace mxcomp {
   
   template <typename T, typename... Args> 
     static auto make_fields(Field_<T, Args>... args) 
-    RETURN( (tupleExt::MappedTuple_<std::string, pullName, Field_<T, Args>...>(args...)))   
+    RETURN( (std::make_tuple(args...)))   
 
     
     template<typename type> 

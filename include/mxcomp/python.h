@@ -42,7 +42,7 @@ namespace mxcomp {
     static void Do() {
       auto clazz = boost::python::class_<H>( prettyName(typeid(H)).c_str(), init<>());
       auto functor = python_process<H>{clazz};
-      tupleExt::iterate(functor, MetaClass_<H>::members());    
+      mxcomp::tuples::iterate(functor, MetaClass_<H>::members());    
       Register<T...>::Do();
     }
   };

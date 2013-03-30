@@ -1,7 +1,8 @@
 #include "../tuple_ext.h"
 #include <iostream>
 
-namespace tupleExt {
+namespace mxcomp {
+  namespace tuples {
   struct Print {
     template <typename T>
     void operator()(const size_t i, const T& t) {
@@ -14,7 +15,8 @@ namespace tupleExt {
     static inline void printTuple(const std::tuple<Args...>& tuple){
     P p;
     std::cout << "(";
-    iterate_i(p, tuple);
+    mxcomp::tuples::iterate_i(p, tuple);
     std::cout << ")" << std::endl;
   }
+}
 }

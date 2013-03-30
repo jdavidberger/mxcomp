@@ -1,5 +1,6 @@
+#define METHOD1 true
 #include "tuples2.h"
-
+using namespace mxcomp::tuples;
 void f(char& a, int& b, double& c, const char* d){
   std::cout << "F called! " << a << " " << b << " " << c << " " << d << std::endl;
 }

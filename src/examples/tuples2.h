@@ -1,6 +1,6 @@
 #include <mxcomp/tuples.h>
 using namespace std;
-using namespace tupleExt;
+using namespace mxcomp::tuples;
 
 struct A { };
 struct B : public A {};
