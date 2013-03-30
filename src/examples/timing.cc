@@ -1,4 +1,6 @@
-#define METHOD1 true
+/* Copyright (C) 2012-2013 Justin Berger 
+   The full license is available in the LICENSE file at the root of this project and is also available at http://opensource.org/licenses/MIT. */
+
 #include "tuples2.h"
 using namespace mxcomp::tuples;
 template <typename... T> static auto make_2(T&... t) RETURN( std::make_tuple(t..., t...))
