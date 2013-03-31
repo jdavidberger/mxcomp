@@ -52,6 +52,18 @@ namespace mxcomp {
 
   /* -------------------- /iterate_ti -------------------- */
 
+  /* -------------------- map -------------------- */
+    template <typename F, typename Tuple, size_t... N>
+      inline auto map(F&& f, const Tuple& t, const indices<N...>&) 
+      RETURN ( std::tuple< decltype(f(std::get<N>(t)))...> ( f(std::get<N>(t))...));
+    
+    template <typename F, typename Tuple>
+      inline auto map(F&& f, const Tuple& t)
+      RETURN( map(std::forward<F>(f), t, typename range<0, std::tuple_size<Tuple>::value>::type()));
+
+  /* -------------------- /map -------------------- */
+
+
   /* -------------------- iterate_i -------------------- */
     template <typename F, typename Tuple, size_t... N>
       inline auto iterate_i(F&& f, const Tuple& t, const indices<N...>&) -> void {
@@ -65,24 +77,14 @@ namespace mxcomp {
     /* -------------------- /iterate_i -------------------- */
 
   /* -------------------- make_jumptable -------------------- */
-  template <typename F, typename FT, std::size_t N, typename... Args>
-    auto inline make_jumptable1(FT* jump[sizeof...(Args)]) 
-    -> typename std::enable_if< N == sizeof...(Args), void>::type { }
- 
-  template <typename F, typename FT, std::size_t N, typename... Args>
-    auto inline make_jumptable1(FT* jump[sizeof...(Args)]) 
-    -> typename std::enable_if< N < sizeof...(Args), void>::type {
-    jump[N] = [](F& f, const std::tuple<Args...>& t) { return f( std::get<N>(t)); };  
-    make_jumptable1<F, FT, N+1, Args...>(jump);
-  }
-
+   
   template <typename F, typename Tuple, size_t N>
-    auto inline jump_(F& f, const Tuple& t) 
+    auto inline jump_(F&& f, const Tuple& t) 
     RETURN(f( std::get<N>(t)));
 
   template <typename F, typename FT, typename Tuple, size_t... N>
     auto inline make_jumptable(FT* jump[sizeof...(N)], const indices<N...>&) -> void {
-    noop( {(jump[N] = jump_<F, Tuple, N>,0)...});
+    noop( {((jump[N] = &jump_<F, Tuple, N>),0)...});
   }
 
   template <typename F, typename FT, typename... Args>
@@ -103,7 +105,7 @@ namespace mxcomp {
       init = true;
       make_jumptable<F, FT, Args...>(jump);
     }
-    jump[i](f, t);
+    jump[i](std::forward<F>(f), t);
   }
   /* -------------------- /run -------------------- */
 
@@ -118,7 +120,7 @@ namespace mxcomp {
       init = true;
       make_jumptable<F, FT, Args...>(jump);
     }
-    return jump[i](f, t);
+    return jump[i](std::forward<F>(f), t);
   }
   /* -------------------- /get -------------------- */
 

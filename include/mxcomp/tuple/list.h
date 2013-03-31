@@ -3,7 +3,9 @@
 
 #pragma once
 #include <mxcomp/tuple/apply.h>
-
+#include <assert.h>
+#include <iostream>
+#include <mxcomp/printing.h>
 namespace mxcomp {
   namespace tuples {
   /** Append an item to the end of a tuple. */
@@ -15,10 +17,10 @@ namespace mxcomp {
   }
 
   /** Get the head of a tuple */
-  template <typename H, typename... Args>
-    H& head(std::tuple<H, Args...>&& lst){
-    return std::get<0>(lst);
-  }
+  template <typename Tuple>
+    auto head(Tuple&& lst)
+    RETURN(std::get<0>(lst));
+  
 
   /** Get the tail of a tuple */
   template <typename H, typename... Args>
@@ -39,28 +41,33 @@ namespace mxcomp {
       /** Terminal condition -- when the 'in' tuple is blank our out tuple is
 	  our resultant type */
       template <typename... Out> 
-      static auto get(std::tuple<Out...> out, const std::tuple<>&, int) -> std::tuple<Out...> {
+      static auto get(std::tuple<Out...> out, const std::tuple<>&) -> std::tuple<Out...> {
 	return out;
       }
 
       /** This function is only visible when H is a desendent of T. 
 	  You can change out 'is_base_of' for different filters. */
       template <typename... Out, typename H, typename... In> 
-	static auto get(std::tuple<Out...> out, std::tuple<H, In...> in, int) 
-	-> typename std::enable_if<std::is_base_of<T, H>::value, decltype(of_type<T>::get(append(out, head(in)), tail(in), 0))>::type 
+	static auto get(std::tuple<Out...> out, std::tuple<H, In...> in) 
+	-> typename std::enable_if<std::is_base_of<T, H>::value, decltype(of_type<T>::get(append(out, head(in)), tail(in)))>::type 
       {
-	return of_type<T>::get(append(out, head(in)), tail(in), 0);
+	return of_type<T>::get(append(out, head(in)), tail(in));
       }
 
       /** This is the function that is inserted when the filter fails.
 	  Notice that the 'head' of the in tuple is discarded. */
       template <typename... Out, typename H, typename... In> 
-	static auto get(std::tuple<Out...> out, std::tuple<H, In...> in, long) 
-	RETURN(of_type<T>::get(out, tail(in), 0) );
+	static auto get(std::tuple<Out...> out, std::tuple<H, In...> in) 
+	-> typename std::enable_if<std::is_base_of<T, H>::value == false, decltype(of_type<T>::get(out, tail(in)))>::type {
+	std::cerr << typeid(T) << std::endl;
+	std::cerr << typeid(H) << std::endl;
+	std::cerr << std::is_base_of<T,H>::value << std::endl;
+	return of_type<T>::get(out, tail(in));
+      }
    
       /** Starter call to initiate the filter */
-      template <typename H,typename... Args> static auto get(std::tuple<H, Args...>& tuple) 
-	RETURN(of_type<T>::get( std::make_tuple(), tuple, 0));
+      template <typename... Args> static auto get(std::tuple<Args...>& tuple) 
+      RETURN(of_type<T>::get( std::make_tuple(), tuple));
 
     };
 
@@ -68,7 +75,7 @@ namespace mxcomp {
       structure.
    */
   template <typename T, typename... Args>
-    static inline auto ofType(std::tuple<Args...>& lst) RETURN( of_type<T>::get(lst) )
+    static inline auto ofType(std::tuple<Args...>& lst) RETURN( of_type<T>::get( (lst)) )
 
 }
 }

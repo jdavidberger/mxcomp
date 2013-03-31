@@ -10,22 +10,21 @@
 
 namespace mxcomp {
 
-  
-  
-  template <typename T> struct MetaClass_ {    
-    
-  };
-
   struct Member {
   Member(const std::string& _name) : name(_name){}
     std::string name;
   };
+
+  static inline std::ostream& operator <<(std::ostream& o, const Member& m){
+    return o << m.name;
+  }
 
   template <typename T> 
     struct Member_ : public Member{
   Member_(const std::string& _name) : Member(_name){}
 
   };
+
 
   template <typename T, typename Rtn, typename... Args>
     struct Function_ : Member_<T> {
@@ -56,7 +55,7 @@ namespace mxcomp {
     using FieldT = S (T::*);
     FieldT field;
   Field_(const std::string& _name, FieldT _field ) : field(_field), Member_<T>(_name) {}
-
+    
     const S& get(const T& t) const {
       return (&t)->*field;
     }
@@ -92,13 +91,15 @@ namespace mxcomp {
       }
     };
 
-  /*  template <typename T> struct MetaClass_ {    
-    //    using MembersT = decltype(MetaClass_<T>::Members);
-    static auto members() STATIC_RETURN( MetaClass_<T>::Members );
-    static auto functions() STATIC_RETURN( (tupleExt::of_type<template<typename S> Function<T,S> >( MetaClass_<T>::Members )) );    
+  template <typename T> struct MetaClass {};
+
+  template <typename _T, typename Provider = MetaClass<_T>, typename enable = decltype(Provider::members(), void()) > 
+    struct MetaClass_ {        
+      using t = int;
+      static auto members() STATIC_RETURN( Provider::members() );
+      static auto fields() STATIC_RETURN( (mxcomp::tuples::ofType< Field  >( members() )) );    
   };
-  */
-  
+    
   template <typename T, typename... Args> 
     static auto make_fields(Field_<T, Args>... args) 
     RETURN( (std::make_tuple(args...)))   
@@ -109,8 +110,9 @@ namespace mxcomp {
       using T = type;
     };
 
+
 #define METACLASS(type)					\
-  template <> struct MetaClass_< type > : DefineT<type> 
+  template <> struct MetaClass< type > : DefineT<type>
 
 #define MEMBERS(fs...)				\
   static auto members()				\
