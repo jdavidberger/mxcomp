@@ -3,6 +3,7 @@
 
 #include "tuples2.h"
 using namespace mxcomp::tuples;
+using namespace mxcomp;
 template <typename... T> static auto make_2(T&... t) RETURN( std::make_tuple(t..., t...))
 template <typename... T> static auto make_4(T&... t) RETURN( make_2(t..., t...))
 template <typename... T> static auto make_8(T&... t) RETURN( make_4(t..., t...))
@@ -20,9 +21,12 @@ struct F {
   }
 };
 
+void f(range<0, 100>::type&) { }
+
 int main() {
   auto tuple = make_64("A");
-  
+  range<0, 100>::type r;
+  f(r);
   printTuple(tuple); 
   
   printTuple(tail(tuple)); 

@@ -25,9 +25,10 @@ namespace mxcomp {
 
   };
 
+  struct Function {};
 
   template <typename T, typename Rtn, typename... Args>
-    struct Function_ : Member_<T> {
+    struct Function_ : Member_<T>, public Function {
     using FunctionT = Rtn (T::*)(Args...);
     FunctionT function;
   Function_(const std::string& _name, FunctionT _function ) : function(_function), Member_<T>(_name) {}
@@ -38,7 +39,7 @@ namespace mxcomp {
   };
 
   template <typename T, typename... Args>
-    struct Function_<T, void, Args...> : Member_<T> {
+    struct Function_<T, void, Args...> : Member_<T>, public Function {
     using FunctionT = void (T::*)(Args...);
     FunctionT function;
   Function_(const std::string& _name, FunctionT _function ) : function(_function), Member_<T>(_name) {}

@@ -31,10 +31,29 @@ struct F {
     std::cerr << idx << ": " << t << std::endl;
   }
 
+  void apply(char a, int b, float c, const char* str) {
+    std::cerr << a << " " << b << " " << c << " " << str << std::endl;
+  }
+  void operator()(char a, int b, float c, const char* str) {
+    std::cerr << a << " " << b << " " << c << " " << str << std::endl;
+  }
+
+  void operator()(char a, int b, float c, std::string&& str) {
+    std::cerr << a << " " << b << " " << c << " " << str << std::endl;
+  }
 };
+
+static void apply_to3(char a, int b, float c){
+  std::cerr << a << " " << b << " " << c << std::endl;
+}
+
+static void apply_to4(char a, int b, float c, const char* str) {
+  std::cerr << a << " " << b << " " << c << " " << str << std::endl;
+}
 
 int main() {
   auto tuple = make_tuple('a', 12, 3.14, "Test");
+
   F f;
   F const f2;
   printTuple(tuple);
@@ -64,6 +83,13 @@ int main() {
   get(F(), 1, make_tuple('a', 12));
   get(f2, 0, make_tuple('a', 12));
 
+  applyTuple(apply_to4, tuple);
+  applyTuple(apply_to3, make_tuple('a', 12, 3));
+  applyTuple(F(), tuple);
+  applyTuple(F(), std::tuple<char, int, float, char const*>('a', 3, 3.14, "asdfasdf"));
+  applyTuple(F(), std::tuple<char, int, float, std::string>('a', 3, 3.14, "asdfasdf"));
+  applyTuple(f, tuple);
+  applyTuple(&f, &F::apply, tuple);
 
   return 0;
 }

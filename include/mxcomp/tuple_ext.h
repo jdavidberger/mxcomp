@@ -113,7 +113,7 @@ namespace mxcomp {
   template <typename F, typename... Args>
     auto inline get( F&& f, const size_t i, const std::tuple<Args...>& t) -> decltype(f(std::get<0>(t) ))
   {
-    using FT = decltype(f( std::get<0>(t))) ( F&, const std::tuple<Args...>& );
+    using FT = decltype(f( std::get<0>(t))) ( F&&, const std::tuple<Args...>& );
     static FT* jump[sizeof...(Args)];
     static bool init = false;
     if(!init){    
