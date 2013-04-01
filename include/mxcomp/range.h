@@ -3,11 +3,14 @@
 
 #pragma once 
 
-// This code is mostly due to http://preney.ca/paul/archives/934 
+// <s>This code is mostly due to http://preney.ca/paul/archives/934 </s>
+// Now it's mostly due to http://stackoverflow.com/questions/13072359/c11-compile-time-array-with-logarithmic-evaluation-depth/13073076#13073076
 namespace mxcomp {
+
   template <size_t... N>
   struct indices {}; 
 
+  /** Merge, given two indices classes, produces an extension of the first with all the elements of the second, offset by the last element in the first. Ie, if you merge <0, 1, 2>, <0, 1, 2> you get <0, 1, 2, 3, 4, 5> */
   template <class A, class B>
     struct merge;
 
@@ -16,6 +19,7 @@ namespace mxcomp {
     using type = indices<A..., (sizeof...(A)+B)...>;
   };
 
+  /** Sequence defines a sequence starting at 0 going up to and including size */ 
   template < size_t size > 
     struct seq {
       using type = 
@@ -26,6 +30,7 @@ namespace mxcomp {
   template <> struct seq<0> { using type = indices<>;  };
   template <> struct seq<1> { using type = indices<0>; };
   
+  /** Range defines an indices range from 'begin' up to and excluding 'end'. */
   template < size_t begin, size_t end, typename I = void> 
     struct range {
       using type = typename range<begin, end, typename seq<end - begin >::type >::type;
@@ -36,21 +41,4 @@ namespace mxcomp {
     using type = indices< (begin + N)... >;
   };
 
-  /*
-
-  template < size_t begin, size_t end, typename I = void> 
-    struct range {
-      using type = typename range<begin, end, indices<> >::type;
-    };
-
-  template < size_t begin, size_t end, size_t... N > 
-    struct range<begin, end, indices<N...> > {
-    using type = typename range<begin+1, end, indices<N..., begin> >::type;
-  };
-
-  template < size_t end, size_t... N > 
-    struct range<end, end, indices<N...> > {
-    using type = indices<N...>;
-  };
-  */
 }
