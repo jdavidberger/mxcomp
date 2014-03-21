@@ -4,7 +4,6 @@
 #include <mxcomp/log.h>
 #include <fstream>
 #include <iostream>
-#include <cxxabi.h>
 
 static std::ostream* defaultStream = &std::cerr;
 
@@ -52,7 +51,7 @@ namespace mxcomp {
   }
 }
 
-// We _must_ define this block in this file; as its hte only way to insure that it fires off before any of the functions for logging
+// We _must_ define this block in this file; as its the only way to insure that it fires off before any of the functions for logging
 #ifdef RT_USE_CONFIGURATION
 #include <rikitiki/configuration/configuration>
 using namespace rikitiki;

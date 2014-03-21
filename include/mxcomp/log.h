@@ -6,7 +6,9 @@
 #include <map>
 #include <string>
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <pthread.h>
+#endif
 #include <typeinfo>
 #include <atomic>
 
@@ -38,7 +40,9 @@ namespace mxcomp {
     static inline std::ostream& currThreadName(std::ostream& stream){
       std::string buffer;
       buffer.resize(32);
+#ifndef _MSC_VER
       pthread_getname_np(pthread_self(), &buffer[0], 32);    
+#endif
       return stream << buffer.c_str();
     }
   }

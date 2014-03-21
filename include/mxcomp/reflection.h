@@ -113,21 +113,21 @@ namespace mxcomp {
 
 
 #define METACLASS(type)					\
-  template <> struct MetaClass< type > : DefineT<type>
+  template <> struct mxcomp::MetaClass< type > : DefineT<type>
 
-#define MEMBERS(fs...)				\
+#define MEMBERS(...)				\
   static auto members()				\
-    STATIC_RETURN(std::make_tuple(fs))
+  STATIC_RETURN(std::make_tuple(__VA_ARGS__))
 
-#define FIELDS(fs...)				\
+#define FIELDS(...)				\
   static auto fields()				\
-    STATIC_RETURN(make_fields(fs))
+  STATIC_RETURN(mxcomp::make_fields(__VA_ARGS__))
     
 #define FIELD(name)				\
-  make_field( #name, &T::name)
+     mxcomp::make_field( #name, &T::name)
 
 #define FUNCTION(name)				\
-  make_field( #name, &T::name)
+     mxcomp::make_field( #name, &T::name)
 
 
 }

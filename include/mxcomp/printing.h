@@ -1,6 +1,11 @@
 #pragma once
-
+#ifdef _MSC_VER
+#include <Windows.h>
+#define DEMANGLE_SYMBOL_NAME(name, buffer, size, status) name
+#else 
 #include <cxxabi.h>
+#define DEMANGLE_SYMBOL_NAME(name, buffer, size, status) abi::__cxa_demangle(name, buffer, size, status)
+#endif
 #include <iostream>
 #include <typeinfo>
 namespace mxcomp {
@@ -8,7 +13,8 @@ namespace mxcomp {
     char buf[1024];
     size_t size=1024;
     int status;
-    char* res = abi::__cxa_demangle (ti.name(),
+	
+	const char* res = DEMANGLE_SYMBOL_NAME(ti.name(),
 				     buf,
 				     &size,
 				     &status);

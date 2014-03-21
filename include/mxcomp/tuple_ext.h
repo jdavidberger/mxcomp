@@ -77,7 +77,7 @@ namespace mxcomp {
     /* -------------------- /iterate_i -------------------- */
 
   /* -------------------- make_jumptable -------------------- */
-   
+#ifndef _MSC_VER
   template <typename F, typename Tuple, size_t N>
     auto inline jump_(F&& f, const Tuple& t) 
     RETURN(f( std::get<N>(t)));
@@ -91,7 +91,6 @@ namespace mxcomp {
     auto inline make_jumptable(FT* jump[sizeof...(Args)]) -> void {
     make_jumptable<F, FT, std::tuple<Args...>>(jump, typename range<0, sizeof...(Args)>::type());
   }
-
   /* -------------------- /make_jumptable -------------------- */
 
   /* -------------------- run -------------------- */
@@ -123,6 +122,7 @@ namespace mxcomp {
     return jump[i](std::forward<F>(f), t);
   }
   /* -------------------- /get -------------------- */
+#endif
 
   /* -------------------- to_vector -------------------- */
   template <std::size_t N = 0, typename F, typename Rtn, typename... Args>
