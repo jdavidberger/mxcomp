@@ -1,6 +1,5 @@
 #pragma once
 #ifdef _MSC_VER
-#include <Windows.h>
 #define DEMANGLE_SYMBOL_NAME(name, buffer, size, status) name
 #else 
 #include <cxxabi.h>

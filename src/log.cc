@@ -5,22 +5,29 @@
 #include <fstream>
 #include <iostream>
 
-static std::ostream* defaultStream = &std::cerr;
+static std::wostream* defaultStream = &std::wcerr;
 
 namespace mxcomp {
   namespace log {
-    static std::map<std::string, std::ostream*> logStreams;
+    static std::map<std::string, std::wostream*> logStreams;
+
+    std::wostream & operator<< (std::wostream & ostr,
+         std::string const & str) {
+         std::copy(str.begin(), str.end(),
+              std::ostream_iterator<char, wchar_t>(ostr));
+         return (ostr);
+    }
 
     std::map<std::string, int>& logLevels(){
       static std::map<std::string, int> logLevels;
       return logLevels;
     }
 
-    void SetLogStream(const std::string& category, std::ostream& stream){
+    void SetLogStream(const std::string& category, std::wostream& stream){
       logStreams[category] = &stream;
     }
 
-    std::ostream& LogStream(const std::string& category){
+    std::wostream& LogStream(const std::string& category){
       auto it = logStreams.find(category);
       return it == logStreams.end() ? *defaultStream : *(it->second);
     }
