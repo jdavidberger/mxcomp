@@ -24,11 +24,10 @@ namespace mxcomp {
       Error
     };
 
-    std::wostream & operator<< (std::wostream & ostr,
-         std::string const & str);
-
-    void SetLogStream(const std::string& category, std::wostream& stream);
-    std::wostream& LogStream(const std::string& category);
+    void SetLogStream(std::ostream& stream);
+    void SetLogStream(std::ostream* stream);
+    void SetLogStream(const std::string& category, std::ostream& stream);
+    std::ostream& LogStream(const std::string& category);
 
     void SetLogLevel(const std::string& category, int level);
     void SetLogLevel(const std::string& category, const std::string& level);
@@ -41,8 +40,8 @@ namespace mxcomp {
       return ll <= level;
     }
 
-    static inline std::wostream& currThreadName(std::wostream& stream){
-      std::wstring buffer;
+    static inline std::ostream& currThreadName(std::ostream& stream){
+      std::string buffer;
       buffer.resize(32);
 #ifndef _MSC_VER
       pthread_getname_np(pthread_self(), &buffer[0], 32);    
@@ -53,4 +52,4 @@ namespace mxcomp {
 }
 
 std::ostream& operator<<(std::ostream&, const std::type_info&);
-#define LOG(CAT, LEVEL) if(mxcomp::log::ShouldLog(#CAT, mxcomp::log::LEVEL) ) mxcomp::log::LogStream(#CAT) << L"[" << L#CAT << L", " << L#LEVEL << L" (" << mxcomp::log::currThreadName << L")] "
+#define LOG(CAT, LEVEL) if(mxcomp::log::ShouldLog(#CAT, mxcomp::log::LEVEL) ) mxcomp::log::LogStream(#CAT) << "[" << #CAT << ", " << #LEVEL << " (" << mxcomp::log::currThreadName << ")] "

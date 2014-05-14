@@ -50,7 +50,7 @@ namespace mxcomp {
           void Run();
           void Add(Task* task);
           Task* pop_task();
-          TaskQueue(size_t threads = 20);
+          TaskQueue(size_t threads = 20, bool run = false);
           ~TaskQueue();
      };
 }

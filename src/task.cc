@@ -52,8 +52,10 @@ namespace mxcomp {
           }
      }
 
-     TaskQueue::TaskQueue(size_t threads){   
+     TaskQueue::TaskQueue(size_t threads, bool run){   
           pool.resize(threads, 0);          
+		  if (run)
+			  Run();
      }
 
 }
