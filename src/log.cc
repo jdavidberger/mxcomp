@@ -5,6 +5,11 @@
 #include <fstream>
 #include <iostream>
 
+// http://connect.microsoft.com/VisualStudio/feedback/details/809540/c-warnings-in-stl-thread
+#pragma warning(disable: 4265)
+#include <mutex>
+#pragma warning(default: 4265)
+
 static std::ostream* defaultStream = &std::cerr;
 
 namespace mxcomp {
@@ -12,10 +17,17 @@ namespace mxcomp {
 
 
     static std::map<std::string, std::ostream*> logStreams;
+	std::mutex logMutex; 
 
     std::map<std::string, int>& logLevels(){
-      static std::map<std::string, int> logLevels;
-      return logLevels;
+      static std::map<std::string, int>* logLevels = 0;
+	  if (logLevels == 0) { // Makes logLevels look up cheap when there is an object (no mutex lock)
+		  std::lock_guard<std::mutex> lock(logMutex);
+		  if (logLevels == 0) { // If we blocked for another thread, make sure we dont create two logLevels. 
+			  logLevels = new std::map<std::string, int>();
+		  }
+	  }
+      return *logLevels;
     }
     void SetLogStream(std::ostream* stream) {
          defaultStream = stream;
