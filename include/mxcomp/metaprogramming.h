@@ -7,6 +7,8 @@
 
 template <typename T> struct instance_of {
   T& value;     
-private: 
-	instance_of();
+private:
+     instance_of();
+     instance_of(const instance_of&);
+     instance_of& operator=(const instance_of&);
 };
