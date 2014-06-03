@@ -10,7 +10,13 @@
 #include <mutex>
 #pragma warning(default: 4265)
 
+#ifdef _MSC_VER
+#include <mxcomp/vsostream.h>
+static std::ostream* defaultStream = &mxcomp::vsdb;
+#else 
 static std::ostream* defaultStream = &std::cerr;
+#endif
+
 
 namespace mxcomp {
   namespace log {
