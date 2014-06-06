@@ -1,4 +1,5 @@
 #include <mxcomp/vsostream.h>
+#include <mxcomp/threadedstringbuf.h>
 #define NTDDI_WIN7SP1 0x06010100
 #include <Windows.h>
 #include <ostream>
@@ -11,21 +12,9 @@
 namespace mxcomp {
      
      template <class CharT, class TraitsT = std::char_traits<CharT> >
-     struct vsstreambuf : public std::basic_stringbuf<CharT, TraitsT> {
+     struct vsstreambuf : public mxcomp::threadstringbuf<CharT, TraitsT> {
           std::mutex vsmutex;
-          virtual ~vsstreambuf() { sync(); }
-          virtual int_type underflow() {
-               std::lock_guard<std::mutex> g(vsmutex);
-               return std::basic_stringbuf<CharT, TraitsT>::underflow();
-          }
-          virtual int_type overflow(int_type c = traits_type::eof()) {
-               std::lock_guard<std::mutex> g(vsmutex);
-               return std::basic_stringbuf<CharT, TraitsT>::overflow(c);
-          }
-          virtual int_type pbackfail(int_type c = traits_type::eof()) {
-               std::lock_guard<std::mutex> g(vsmutex);
-               return std::basic_stringbuf<CharT, TraitsT>::pbackfail(c);
-          }
+          virtual ~vsstreambuf() { sync(); }          
      protected:
           int sync()
           {
