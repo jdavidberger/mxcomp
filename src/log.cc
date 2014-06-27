@@ -4,7 +4,7 @@
 #include <mxcomp/log.h>
 #include <fstream>
 #include <iostream>
-#include <mxcomp/future_contwith.h>
+//#include <mxcomp/future_contwith.h>
 
 // http://connect.microsoft.com/VisualStudio/feedback/details/809540/c-warnings-in-stl-thread
 #pragma warning(disable: 4265)
