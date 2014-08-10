@@ -23,12 +23,14 @@ namespace mxcomp {
       Warning,
       Error
     };
-
+    
+    extern int defaultLogLevel;
+    
     void SetLogStream(std::ostream& stream);
     void SetLogStream(std::ostream* stream);
     void SetLogStream(const std::string& category, std::ostream& stream);
     std::ostream& LogStream(const std::string& category);
-
+    void SetLogLevel(int level);
     void SetLogLevel(const std::string& category, int level);
     void SetLogLevel(const std::string& category, const std::string& level);
 
@@ -36,18 +38,10 @@ namespace mxcomp {
     static inline bool ShouldLog(const std::string& category, int level){
 
       auto it = logLevels().find(category);
-      int ll = it == logLevels().end() ? 0 : it->second;
+      int ll = it == logLevels().end() ? defaultLogLevel : it->second;
       return ll <= level;
     }
-
-    static inline std::ostream& currThreadName(std::ostream& stream){
-      std::string buffer;
-      buffer.resize(32);
-#ifndef _MSC_VER
-      pthread_getname_np(pthread_self(), &buffer[0], 32);    
-#endif
-      return stream << buffer.c_str();
-    }
+    std::ostream& currThreadName(std::ostream& stream);    
   }
 }
 

@@ -8,10 +8,16 @@
 
 // http://connect.microsoft.com/VisualStudio/feedback/details/809540/c-warnings-in-stl-thread
 #pragma warning(disable: 4265)
+#include <thread>
 #include <mutex>
 #pragma warning(default: 4265)
 
+
+
 #ifdef _MSC_VER
+#pragma warning(disable: 4668)
+#include <Windows.h>
+#pragma warning(default: 4668)
 #include <mxcomp/vsostream.h>
 static std::ostream* defaultStream = &mxcomp::vsdb;
 #else 
@@ -21,7 +27,7 @@ static std::ostream* defaultStream = &std::cerr;
 
 namespace mxcomp {
   namespace log {
-
+    int defaultLogLevel = 0;
 
     static std::map<std::string, std::ostream*> logStreams;
 	std::mutex logMutex; 
@@ -51,7 +57,9 @@ namespace mxcomp {
       auto it = logStreams.find(category);
       return it == logStreams.end() ? *defaultStream : *(it->second);
     }
-
+    void SetLogLevel(int level){
+         defaultLogLevel = level;
+    }
     void SetLogLevel(const std::string& category, int level){
       logLevels()[category] = level;
     }
@@ -67,7 +75,18 @@ namespace mxcomp {
       }
       return INVALID;
     }
-
+    
+    std::ostream& currThreadName(std::ostream& stream){
+#ifndef _MSC_VER
+         std::string buffer;
+         buffer.resize(32);
+         pthread_getname_np(pthread_self(), &buffer[0], 32);
+         stream << buffer.c_str();
+#else
+         stream << GetCurrentThreadId();
+#endif
+         return stream;
+    }
     void SetLogLevel(const std::string& category, const std::string& level){ 
       int _level = getLevel(level);
       SetLogLevel(category, _level);
