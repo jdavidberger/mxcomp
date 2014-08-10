@@ -13,6 +13,11 @@
 #include <atomic>
 #include <iterator>
 
+// http://connect.microsoft.com/VisualStudio/feedback/details/809540/c-warnings-in-stl-thread
+#pragma warning(disable: 4265)
+#include <mutex>
+#pragma warning(default: 4265)
+
 namespace mxcomp {
   namespace log {
     enum LogLevels {
@@ -25,7 +30,8 @@ namespace mxcomp {
     };
     
     extern int defaultLogLevel;
-    
+    extern std::mutex logMutex;
+
     void SetLogStream(std::ostream& stream);
     void SetLogStream(std::ostream* stream);
     void SetLogStream(const std::string& category, std::ostream& stream);
@@ -46,4 +52,9 @@ namespace mxcomp {
 }
 
 std::ostream& operator<<(std::ostream&, const std::type_info&);
-#define LOG(CAT, LEVEL) if(mxcomp::log::ShouldLog(#CAT, mxcomp::log::LEVEL) ) mxcomp::log::LogStream(#CAT) << "[" << #CAT << ", " << #LEVEL << " (" << mxcomp::log::currThreadName << ")] "
+
+#define LOCK_LOG (std::lock_guard<std::mutex>(mxcomp::log::logMutex)),
+
+#define LOG(CAT, LEVEL)                                                                                                           \
+     if(mxcomp::log::ShouldLog(#CAT, mxcomp::log::LEVEL) )                                                                        \
+          LOCK_LOG mxcomp::log::LogStream(#CAT) << "[" << #CAT << ", " << #LEVEL << " (" << mxcomp::log::currThreadName << ")] "
