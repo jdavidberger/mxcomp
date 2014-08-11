@@ -9,3 +9,7 @@
 #ifndef FINAL
 #define FINAL final
 #endif
+
+#ifndef DEPRECATED 
+#define DEPRECATED(msg) __declspec(deprecated(msg))
+#endif
