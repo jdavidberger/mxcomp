@@ -10,7 +10,6 @@
 #include <pthread.h>
 #endif
 #include <typeinfo>
-#include <atomic>
 #include <iterator>
 
 // http://connect.microsoft.com/VisualStudio/feedback/details/809540/c-warnings-in-stl-thread
