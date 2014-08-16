@@ -1,0 +1,6 @@
+namespace mxcomp {
+  namespace utf {
+    static inline template <typename T> code_length(T leading);
+
+  }
+}

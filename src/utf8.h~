@@ -1,0 +1,13 @@
+#pragma once
+#include <stdint.h>
+
+namespace mxcomp {
+  namespace utf {    
+    static inline template <> code_length(char leading) {
+      
+    }
+    static inline template <> extract_code_point(const char*&, const char*);
+    static inline template <> push_code_points(uint32_t, std::basic_string<char>*);
+    static inline template <> code_length(uint32_t);
+  }
+}
