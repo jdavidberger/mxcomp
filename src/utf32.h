@@ -14,7 +14,7 @@ namespace mxcomp {
       return 1;
     }
 
-    template <> inline uint8_t code_length<utf32_char_t>(utf32_char_t point) {
+    template <> inline uint8_t code_length<utf32_char_t>(utf32_char_t) {
       return 1;
     }
 

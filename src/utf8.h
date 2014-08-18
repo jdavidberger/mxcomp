@@ -19,9 +19,12 @@ namespace mxcomp {
       if((leading & 0x80) == 0) {
 	return 1; 
       } 
-      
+
+#pragma warning (disable : 4309)
       utf8_char_t mask = 0xE0; // 0b11100000
-      for(int i = 2;i < 7;i++) {
+#pragma warning (default : 4309)
+
+      for (uint8_t i = 2; i < 7; i++) {
 	if( (leading & mask) == (mask << 1) )
 	  return i;
 	mask = (mask >> 1) | 0x80; // 0b111xxxxx -> 0b1111xxxx, etc	
@@ -44,10 +47,10 @@ namespace mxcomp {
        buffer += len;
        
        if(len == 1) {
-	 return b[0];
+            return (utf32_char_t)b[0];
        }
        
-       rtn = leading_data_mask(len) & b[0];
+       rtn = leading_data_mask(len) & (utf32_char_t)b[0];
        
        for(uint8_t i = 1;i < len;i++) {
 	 rtn <<= 6;
@@ -85,17 +88,17 @@ namespace mxcomp {
 
       template <> inline uint8_t push_code_points<utf8_char_t>(utf32_char_t point, utf8_t& str) {
       if( (point & 0xFFFFFF80) == 0) {
-	str.push_back( (uint8_t) point );      
+	str.push_back( (utf8_char_t) point );      
 	return 1;
       }
 
       auto clength = code_length<utf8_char_t>(point); 
       assert(clength > 1);
       auto leading = leading_utf8(clength) | (point >> (6 * (clength - 1)));
-      str.push_back(leading);
-      for(unsigned i = clength - 1;i > 0;i--) {
+      str.push_back((utf8_char_t) leading);
+      for(auto i = clength - 1;i > 0;i--) {
 	auto shift = (i - 1) * 6; 
-	str.push_back( 0x80 | ((point >> shift) & 0x3F) );
+        str.push_back((utf8_char_t)(0x80 | ((point >> shift) & 0x3F)));
       }
       return clength;
     }

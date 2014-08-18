@@ -14,7 +14,7 @@ namespace mxcomp {
       LOG(UTF, Debug) << std::hex << point << " has ";
 
       for(uint8_t rtn = 8; rtn < 32;rtn++){
-	if( (1 << (rtn) > point ) ) {
+	if( (1U << (rtn) > point ) ) {
 	  LOG(UTF, Debug) << std::dec << (int)rtn << " active bits " << std::endl;
 	  return rtn;
 	}

@@ -11,6 +11,7 @@ namespace mxcomp {
     }
 
     template <> inline utf32_char_t extract_code_point(const utf16_char_t*& buffer, const utf16_char_t* end) {
+         assert(buffer < end);
       auto len = code_length(buffer[0]);
       const utf16_char_t* b = buffer; 
       buffer += len;

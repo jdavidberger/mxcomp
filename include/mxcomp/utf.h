@@ -4,7 +4,7 @@
 namespace mxcomp {
   namespace utf {
 
-    typedef char     utf8_char_t;
+    typedef     char utf8_char_t;
     typedef char16_t utf16_char_t;
     typedef char32_t utf32_char_t;
 
