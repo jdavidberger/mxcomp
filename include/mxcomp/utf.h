@@ -37,7 +37,8 @@ namespace mxcomp {
     template<typename T, unsigned size, typename out>
       void convert(const T (& in)[size], out& o) {
       convert(&in[0], &in[size-1], o);
-    }
+      }
+
 
 #undef CONVERT
 #undef WCONVERT
@@ -47,28 +48,39 @@ namespace mxcomp {
       y rtn;							\
       utf::convert(in, rtn);					\
       return rtn;						\
-    }								\
+    }								
 
-    namespace utf8 {
-      template <typename inT> CONVERT(inT, utf8_t);
-    }
+#define CONVERT_ARRAY(x, y)						\
+    static inline y convert(const x::value_type* in, const x::value_type* out) {			\
+      y rtn;							\
+      utf::convert(in, out, rtn);					\
+      return rtn;						\
+                    }								\
+
+#define CONVERT_BOTH(x, y) \
+     CONVERT(x,y);\
+     CONVERT_ARRAY(x,y);\
+
+#define UTFNS(utf_name) \
+     namespace utf_name {\
+      template <typename inT> CONVERT(typename inT, utf_name##_t);\
+      template <typename inT> CONVERT_ARRAY(typename inT, utf_name ## _t);\
+      }
+    
+      UTFNS(utf8);
+      UTFNS(utf16);
+      UTFNS(utf32);
 
     namespace utfW {
-      template <typename inT> CONVERT(inT, std::wstring);
-    }
-    namespace utf32 {
-      template <typename inT> CONVERT(inT, utf32_t);
+         template <typename inT> CONVERT(typename inT, std::wstring);
+         template <typename inT> CONVERT_ARRAY(typename inT, std::wstring);
     }
 
-    namespace utf16 {
-      template <typename inT> CONVERT(inT, utf16_t);
-    }
+    CONVERT_BOTH(std::wstring, std::string);
+    CONVERT_BOTH(std::string,  std::wstring);
 
-    CONVERT(std::wstring, std::string);
-    CONVERT(std::string,  std::wstring);
-
-    CONVERT(utf16_t, std::string);
-    CONVERT(utf32_t, std::string);
+    CONVERT_BOTH(utf16_t, std::string);
+    CONVERT_BOTH(utf32_t, std::string);
 
 #undef CONVERT
 

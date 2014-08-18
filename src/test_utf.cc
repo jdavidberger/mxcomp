@@ -62,12 +62,14 @@ void conversion_test(QUnit::UnitTest& qunit, const std::wstring& wide, const utf
      conversion_test(qunit, wide, utf8, utf16, utf32);                 \
   }                                                                    \
 
+#ifndef _MSC_VER
 #define _CHAR_TEST(hex, uni) {				   \
      CONVERSION_TEST(#uni);  				   \
      QUNIT_IS_EQUAL(0x ## hex, utf32::convert(L ### uni)[0]); \
   } 
 
 #define CHAR_TEST(hex) _CHAR_TEST(hex, \U ## hex)
+#endif
 
 int main() {
   QUnit::UnitTest qunit(std::cout, QUnit::normal);

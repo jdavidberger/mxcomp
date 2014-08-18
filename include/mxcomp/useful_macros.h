@@ -3,7 +3,11 @@
 #endif
 
 #ifndef UNREFERENCED_PARAMETER
-#define UNREFERENCED_PARAMETER(P) (void)(P)
+#ifdef _MSC_VER
+#define UNREFERENCED_PARAMETER(P) (P) /* In windows, make it identical to Winnt.h*/
+#else
+#define UNREFERENCED_PARAMETER(P) (void)(P) /* In gcc/clang, (P) complains about useless statement. (void)(P) doesnt.*/
+#endif
 #endif
 
 #ifndef FINAL
