@@ -51,11 +51,11 @@ namespace mxcomp {
     }								
 
 #define CONVERT_ARRAY(x, y)						\
-    static inline y convert(const x::value_type* in, const x::value_type* out) {			\
-      y rtn;							\
+    static inline y convert(const typename x::value_type* in, const typename x::value_type* out) { \
+      y rtn;								\
       utf::convert(in, out, rtn);					\
-      return rtn;						\
-                    }								\
+      return rtn;							\
+    }									\
 
 #define CONVERT_BOTH(x, y) \
      CONVERT(x,y);\
@@ -63,8 +63,8 @@ namespace mxcomp {
 
 #define UTFNS(utf_name) \
      namespace utf_name {\
-      template <typename inT> CONVERT(typename inT, utf_name##_t);\
-      template <typename inT> CONVERT_ARRAY(typename inT, utf_name ## _t);\
+      template <typename inT> CONVERT(inT, utf_name##_t);\
+      template <typename inT> CONVERT_ARRAY(inT, utf_name ## _t);\
       }
     
       UTFNS(utf8);
@@ -72,8 +72,8 @@ namespace mxcomp {
       UTFNS(utf32);
 
     namespace utfW {
-         template <typename inT> CONVERT(typename inT, std::wstring);
-         template <typename inT> CONVERT_ARRAY(typename inT, std::wstring);
+         template <typename inT> CONVERT(inT, std::wstring);
+         template <typename inT> CONVERT_ARRAY(inT, std::wstring);
     }
 
     CONVERT_BOTH(std::wstring, std::string);
