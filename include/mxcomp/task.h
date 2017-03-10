@@ -2,14 +2,14 @@
 
 #include <tuple>
 #include <queue>
-#include <mxcomp\tuple_ext.h>
+#include <mxcomp/tuple_ext.h>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
 
 namespace mxcomp {
 
-     struct __declspec(dllexport) Task
+     struct Task
      {
           virtual ~Task();
           virtual void Action() = 0;
@@ -39,7 +39,7 @@ namespace mxcomp {
           return new Task_<T, F, Args...>(t, f, args...);
      }
 
-     struct __declspec(dllexport) TaskQueue {
+     struct TaskQueue {
           bool running;
           std::mutex modify_lock; 
           std::condition_variable task_add;

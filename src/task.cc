@@ -1,4 +1,4 @@
-#include <mxcomp\task.h>
+#include <mxcomp/task.h>
 
 namespace mxcomp {
      
@@ -8,10 +8,8 @@ namespace mxcomp {
 
      Task* TaskQueue::pop_task() {   
           std::unique_lock<std::mutex> lock(modify_lock);
-          bool waited = false;
           while (tasks.size() == 0) {
                task_add.wait(lock);
-               waited = true;
           }
           
           auto task = tasks.front();

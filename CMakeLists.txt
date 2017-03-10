@@ -23,4 +23,31 @@ SET(IS_MAIN_PROJECT ${PROJECT_NAME}==${CMAKE_PROJECT_NAME})
 include_directories(include)
 add_subdirectory(src)
 
+set(mxcompExports mxcomp)
 install(DIRECTORY include/${PROJECT_NAME} DESTINATION include)
+
+export(PACKAGE mxcomp)
+install(DIRECTORY include/mxcomp DESTINATION include)
+
+set(mxcomp_INCLUDE_DIRS "${mxcomp_INCLUDE_DIRS}")
+
+# Create the FooBarConfig.cmake and FooBarConfigVersion files
+set(REL_INCLUDE_DIR include)
+
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+configure_file(mxcompConfig.cmake.in
+        "${PROJECT_BINARY_DIR}/mxcompConfig.cmake" @ONLY)
+
+# ... for the install tree
+set(CONF_INCLUDE_DIRS "\${MXCOMP_CMAKE_DIR}/${REL_INCLUDE_DIR}")
+configure_file(mxcompConfig.cmake.in
+        "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/mxcompConfig.cmake" @ONLY)
+# ... for both
+configure_file(mxcompConfigVersion.cmake.in
+        "${PROJECT_BINARY_DIR}/mxcompConfigVersion.cmake" @ONLY)
+
+# Install the mxcompConfig.cmake and mxcompConfigVersion.cmake
+install(FILES
+        "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/mxcompConfig.cmake"
+        "${PROJECT_BINARY_DIR}/mxcompConfigVersion.cmake"
+        DESTINATION "lib/cmake" COMPONENT dev)

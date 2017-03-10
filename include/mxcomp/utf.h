@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <mxcomp/log.h>
 
@@ -35,7 +36,7 @@ namespace mxcomp {
     
 
     template<typename T, unsigned size, typename out>
-      void convert(const T (& in)[size], out& o) {
+      static inline void convert(const T (& in)[size], out& o) {
       convert(&in[0], &in[size-1], o);
       }
 
